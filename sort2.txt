@@ -1,0 +1,157 @@
+// mergesort
+#include <stdio.h>
+#include <stdlib.h>
+
+void merge(int arr[], int LB, int mid, int HB) {
+    int i = LB, j = mid + 1, k = 0;
+    int temp[HB - LB + 1];
+
+    // Merge the two halves into temp[]
+    while (i <= mid && j <= HB) {
+        if (arr[i] <= arr[j])
+            temp[k++] = arr[i++];
+        else
+            temp[k++] = arr[j++];
+    }
+
+    // Copy remaining elements of LB half, if any
+    while (i <= mid)
+        temp[k++] = arr[i++];
+
+    // Copy remaining elements of HB half, if any
+    while (j <= HB)
+        temp[k++] = arr[j++];
+
+    // Copy merged elements back into original array
+    for (i = LB, k = 0; i <= HB; i++, k++)
+        arr[i] = temp[k];
+}
+
+void mergeSort(int arr[], int LB, int HB) {
+    if (LB < HB) {                // if lb = hb it means only one element
+        int mid = (LB + HB) / 2;
+
+        // Recursively sort first and second halves
+        mergeSort(arr, LB, mid);
+        mergeSort(arr, mid + 1, HB);
+
+        // Merge sorted halves
+        merge(arr, LB, mid, HB);
+    }
+}
+
+
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int n;
+    printf("Enter the size of array: ");
+    scanf("%d", &n);
+    int *arr = (int *)malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
+        printf("The Element is: ");
+        scanf("%d", &arr[i]);  
+    }
+
+    printf("Original array: \n");
+    printArray(arr, n);
+
+    mergeSort(arr, 0, n - 1);
+
+    printf("Sorted array: \n");
+    printArray(arr, n);
+
+    free(arr); // Free allocated memory
+    return 0;
+}
+
+
+// quicksort
+
+#include <stdio.h>
+#include <stdlib.h>
+
+
+int partition(int arr[], int LB, int HB) {
+    int pivot = arr[LB]; // Choosing the first element as pivot
+    int start = LB + 1;   // Start from the next element
+    int end = HB;
+
+    while (start <= end) {
+        // Move start index to the end while the value is less than the pivot
+        while (start <= HB && arr[start] <= pivot) {
+            start++;
+        }
+        // Move end index to the start while the value is greater than the pivot
+        while (end >= LB && arr[end] > pivot) {
+            end--;
+        }
+        // Swap the elements if start is still less than end
+        if (start < end) {
+            
+
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end]= temp;
+
+
+        }
+    }
+    // Swap the pivot element with the end element
+    
+        
+            int temp2 = arr[end];
+            arr[end] = arr[LB];
+            arr[LB]= temp2;
+        
+    return end; // Return the index of the pivot
+}
+
+void quickSort(int arr[], int LB, int HB) {
+    
+    if (LB < HB) {
+        int pivotIndex = partition(arr, LB, HB);
+        quickSort(arr, LB, pivotIndex - 1);  // Sort start part
+        quickSort(arr, pivotIndex + 1, HB); // Sort end part
+    }
+}
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int n;
+    printf("Enter the size of array: ");
+    scanf("%d", &n);
+    int *arr = (int *)malloc(n * sizeof(int));
+
+    for (int i = 0; i < n; i++) {
+        printf("The Element is: ");
+        scanf("%d", &arr[i]);  
+    }
+
+    printf("Original array: \n");
+    printArray(arr, n);
+
+    quickSort(arr, 0, n - 1);
+
+    printf("Sorted array: \n");
+    printArray(arr, n);
+
+    free(arr); // Free allocated memory
+    return 0;
+}
+
+
+
