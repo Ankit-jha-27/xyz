@@ -1,0 +1,145 @@
+// polynomial
+
+#include <stdio.h>
+
+// Function to add two polynomials
+void addPolynomials(int poly1[], int poly2[], int result[], int size1, int size2) {
+    int maxSize = size1 > size2 ? size1 : size2;
+    for (int i = 0; i < maxSize; i++) {
+        result[i] = 0;
+        if (i < size1) result[i] += poly1[i];
+        if (i < size2) result[i] += poly2[i];
+    }
+}
+
+// Function to multiply two polynomials
+void multiplyPolynomials(int poly1[], int poly2[], int result[], int size1, int size2) {
+    for (int i = 0; i < size1 + size2 - 1; i++) {
+        result[i] = 0; // Initialize each term of the result to 0
+    }
+    for (int i = 0; i < size1; i++) {
+        for (int j = 0; j < size2; j++) {
+            result[i + j] += poly1[i] * poly2[j];
+        }
+    }
+}
+
+int main() {
+    int size1, size2;
+
+    // Input size and coefficients for the first polynomial
+    printf("Enter the degree of the first polynomial: ");
+    scanf("%d", &size1);
+    size1++; // Number of terms = degree + 1
+    int poly1[size1];
+    printf("Enter the coefficients of the first polynomial (from constant to highest degree):\n");
+    for (int i = 0; i < size1; i++) {
+        scanf("%d", &poly1[i]);
+    }
+
+    // Input size and coefficients for the second polynomial
+    printf("Enter the degree of the second polynomial: ");
+    scanf("%d", &size2);
+    size2++; // Number of terms = degree + 1
+    int poly2[size2];
+    printf("Enter the coefficients of the second polynomial (from constant to highest degree):\n");
+    for (int i = 0; i < size2; i++) {
+        scanf("%d", &poly2[i]);
+    }
+
+    // Prepare result arrays
+    int maxAddSize = size1 > size2 ? size1 : size2;
+    int resultAdd[maxAddSize];
+
+    int maxMulSize = size1 + size2 - 1;
+    int resultMul[maxMulSize];
+
+    // Perform addition and multiplication
+    addPolynomials(poly1, poly2, resultAdd, size1, size2);
+    multiplyPolynomials(poly1, poly2, resultMul, size1, size2);
+
+    // Print results
+    printf("Addition Result: ");
+    for (int i = 0; i < maxAddSize; i++) {
+        printf("%dx^%d ", resultAdd[i], i);
+        if (i != maxAddSize - 1) printf("+ ");
+    }
+    printf("\n");
+
+    printf("Multiplication Result: ");
+    for (int i = 0; i < maxMulSize; i++) {
+        printf("%dx^%d ", resultMul[i], i);
+        if (i != maxMulSize - 1) printf("+ ");
+    }
+    printf("\n");
+
+    return 0;
+}
+
+
+//sparse
+
+#include <stdio.h>
+
+struct Element {
+    int row;
+    int col;
+    int value;
+};
+void createSparse(int m, int n, struct Element sparse[]) {
+    int k = 1;
+    sparse[0].row = m;
+    sparse[0].col = n;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            int l;
+            scanf("%d",&l);
+            if (l != 0) {
+                sparse[k].row = i;
+                sparse[k].col = j;
+                sparse[k].value = l;
+                k++;
+            }
+        }
+    }
+    sparse[0].value = k-1;
+}
+
+
+void displaySparse(struct Element sparse[]) {
+    printf("Sparse representation:\n");
+    printf("%d %d %d\n", sparse[0].row, sparse[0].col, sparse[0].value);
+    for (int i = 1; i <= sparse[0].value; i++) {
+        printf("%d %d %d\n", sparse[i].row, sparse[i].col, sparse[i].value);
+    }
+}
+
+void transpose(struct Element sparse[], struct Element trans[]) {
+    int k = 1;
+    trans[0].row = sparse[0].col;
+    trans[0].col = sparse[0].row;
+    trans[0].value = sparse[0].value;
+
+    for (int i = 1; i <= sparse[0].value; i++) {
+        trans[k].row = sparse[i].col;
+        trans[k].col = sparse[i].row;
+        trans[k].value = sparse[i].value;
+        k++;
+    }
+}
+
+int main() {
+    int m, n;
+    struct Element sparse[100], trans[100];
+
+    printf("Enter the number of rows and columns: ");
+    scanf("%d %d", &m, &n);
+    createSparse(m, n, sparse);
+    displaySparse(sparse);
+
+    transpose(sparse, trans);
+    printf("Transpose:\n");
+    displaySparse(trans);
+
+    return 0;
+}
