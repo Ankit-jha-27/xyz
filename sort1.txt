@@ -1,0 +1,202 @@
+// Radix sort
+
+#include <stdio.h>
+
+// Function to get the maximum value in an array
+int getMax(int arr[], int n) {
+    int max = arr[0];
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+// Counting sort function for a specific digit represented by `exp`
+void countingSort(int arr[], int n, int exp) {
+    int output[n]; // Output array
+    int count[10] = {0}; // Count array to store occurrences of digits (0-9)
+
+    // Count occurrences of digits
+    for (int i = 0; i < n; i++) {
+        int digit = (arr[i] / exp) % 10;
+        count[digit]++;
+    }
+
+    // Update count[i] to store position information
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (int i = n - 1; i >= 0; i--) {
+        int digit = (arr[i] / exp) % 10;
+        output[count[digit] - 1] = arr[i];
+        count[digit]--;
+    }
+
+    // Copy the sorted array back to the original array
+    for (int i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+}
+
+// Radix Sort function
+void radixSort(int arr[], int n) {
+    int max = getMax(arr, n);
+
+    // Perform counting sort for each digit (1s, 10s, 100s, ...)
+    for (int exp = 1; max / exp > 0; exp *= 10) {
+        countingSort(arr, n, exp);
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// Main function to test the Radix Sort
+int main() {
+    int n;
+
+    // Taking array size input
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+
+    // Taking array elements input
+    printf("Enter the elements of the array: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    printf("Original array: ");
+    printArray(arr, n);
+
+    // Perform Radix Sort
+    radixSort(arr, n);
+
+    printf("Sorted array: ");
+    printArray(arr, n);
+
+    return 0;
+}
+
+
+// shell sort
+
+#include <stdio.h>
+
+// Function to perform Shell Sort
+void shellSort(int arr[], int n) {
+    // Start with a large gap and reduce it
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+        // Perform gapped insertion sort for this gap
+        for (int i = gap; i < n; i++) {
+            int temp = arr[i];
+            int j;
+
+            // Shift elements until the correct position for arr[i] is found
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+
+            // Place the temp (original arr[i]) in its correct position
+            arr[j] = temp;
+        }
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// Main function to test Shell Sort
+int main() {
+    int n;
+
+    // Taking array size input
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+
+    // Taking array elements input
+    printf("Enter the elements of the array: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    printf("Original array: ");
+    printArray(arr, n);
+
+    // Perform Shell Sort
+    shellSort(arr, n);
+
+    printf("Sorted array: ");
+    printArray(arr, n);
+
+    return 0;
+}
+
+
+// heap sort
+
+#include <stdio.h>
+#include<stdlib.h>
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+void heapify(int arr[], int n, int i) {
+    int largest = i;      
+    int left = 2 * i + 1;  
+    int right = 2 * i + 2; 
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+    if (largest != i) {
+        swap(&arr[i], &arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+void heapSort(int arr[], int n) {
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+    for (int i = n - 1; i > 0; i--) {
+        swap(&arr[0], &arr[i]);
+        heapify(arr, i, 0);
+    }
+}
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+int main() {
+    int n;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+    int arr = (int)malloc(n*sizeof(int));
+    printf("Enter %d elements:\n", n);
+    for (int i = 0; i < n; i++) 
+        scanf("%d", &arr[i]);
+    printf("Original array: \n");
+    printArray(arr, n);
+    heapSort(arr, n);
+    printf("Sorted array: \n");
+    printArray(arr, n);
+    return 0;
+}
