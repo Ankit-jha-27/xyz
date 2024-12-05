@@ -1,0 +1,75 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 100
+void push(char *stack,int *top,char c){
+    if(*top==MAX-1)    return;
+    else    stack[++(*top)]=c;
+}
+void pop(int *top,char *stack,char *topele){
+    if(*top==-1) return;
+    *topele=stack[(*top)--];
+}
+void peek(int top,char *stack,char *topele){
+    if(top==-1) return ;
+    *topele=stack[top];
+}
+int priority(char x){
+    switch(x){
+        case '(':   return 1;
+        case '+':
+        case '-':   return 2;
+        case '*':   
+        case '/':   return 3;
+        case ')':   return 4;
+        default:    return 0;
+    }
+}
+int main(){
+    char *infix,*stack,*postfix,topele;
+    int top=-1,j=0;
+    infix=(char*)malloc((MAX+1)*sizeof(char));
+    postfix=(char*)malloc(MAX*sizeof(char));
+    stack=(char*)malloc(MAX*sizeof(char));
+    printf("Enter infix expression \n");
+    fgets(infix,MAX+1,stdin);
+    for(int i=0;infix[i]!='\0';i++)
+        if(infix[i]=='\n'){
+            infix[i]='\0';
+            break;
+        }
+    for(int i=0;infix[i]!='\0';i++){
+        switch(infix[i]){
+            case '(':
+            push(stack,&top,infix[i]);
+            break;
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+            peek(top,stack,&topele);
+            while(top!=-1 && priority(topele)>=priority(infix[i])){
+                pop(&top,stack,&topele);
+                postfix[j++]=topele;
+                peek(top,stack,&topele);
+            }
+            push(stack,&top,infix[i]);
+            break;
+            case ')':
+            pop(&top,stack,&topele);
+            while(topele!='('){
+                postfix[j++]=topele;
+                pop(&top,stack,&topele);
+            }
+            break;
+            default:    postfix[j++]=infix[i];
+        }
+    }
+    while (top!=-1) {
+        pop(&top,stack,&topele);
+        postfix[j++]=topele;
+    }
+    postfix[j]='\0';
+    printf("Postfix Expression is \n%s",postfix);
+    free(infix);free(postfix);free(stack);
+    return 0;
+}
